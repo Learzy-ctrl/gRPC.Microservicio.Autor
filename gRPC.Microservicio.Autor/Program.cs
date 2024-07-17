@@ -1,5 +1,6 @@
 using gRPC.Microservicio.Autor.Context;
 using gRPC.Microservicio.Autor.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,11 @@ builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
             .AllowAnyHeader()
             .WithExposedHeaders("Grpc-Status", "Grpc-Message", "Grpc-Encoding", "Grpc-Accept-Encoding");
 }));
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5000, o => o.Protocols = HttpProtocols.Http2);
+});
 
 var app = builder.Build();
 
